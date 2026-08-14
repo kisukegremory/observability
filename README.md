@@ -15,3 +15,10 @@ Gostaria de criar um repositório para exercitar meu conhecimento de telemetria,
 1. Criar o otel-collector.yaml para exportar local
 1. Aplicação envia 100% para lá ao invés de console direto
 1. Adicionar um span
+
+
+# Guia de apresentação e manufatura
+1. Criar a api em fast api
+2. Rodar ela de forma pura 'simple run'
+3. Rodar instrumentada local
+4. Rodar via compose com jaeger
