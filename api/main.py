@@ -1,19 +1,20 @@
+import logging
+import random
+import time
+from uuid import uuid4
+
 from fastapi import FastAPI
 from opentelemetry import trace
-import time
-import random
-from uuid import uuid4
-import logging
+
 app = FastAPI()
 
 tracer = trace.get_tracer(__name__)
+logger = logging.getLogger(__name__)
 
 
 @app.get("/health")
 def main():
-    with tracer.start_as_current_span("processamento_leve"):
-        logging.info("Is health")
-        return {"Nina":"Nyaaaa"}
+        return {"status":"ok"}
 
 @tracer.start_as_current_span("calculo_coxinhas")
 def calcula_coxinhas():
@@ -28,7 +29,6 @@ def work():
         if time_choosed < 3:
             time.sleep(time_choosed)
             calcula_coxinhas()
-            soma.delay(4,4)
             span.set_attribute("nina.estado","trabalhando")
             return {"Nina":"Cansadinina!"}
         span.set_attribute("nina.estado","faz_nada")
