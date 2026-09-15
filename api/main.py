@@ -21,6 +21,8 @@ def calcula_coxinhas():
     span = trace.get_current_span()
     span.set_attribute("user.id",str(uuid4()))
 
+def process():
+    pass
 
 @app.get("/work")
 def work():

@@ -3,14 +3,18 @@ services:
     build:
       context: .
       target: dev # Para reload com --watch
+    deploy:
+      replicas: 1
     ports:
       - "8000:8000"
     environment:
       - OTEL_SERVICE_NAME=nina-service
-      - OTEL_TRACES_EXPORTER=none
-      - OTEL_METRICS_EXPORTER=none
-      - OTEL_LOGS_EXPORTER=console
-      # - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4317
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4317
+      - OTEL_PYTHON_EXCLUDED_URLS=health
+      - OTEL_METRIC_EXPORT_INTERVAL=5000
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
       interval: 5s
@@ -29,3 +33,11 @@ services:
           path: pyproject.toml
         - action: rebuild
           path: uv.lock
+    depends_on:
+      - lgtm
+  lgtm:
+    image: grafana/otel-lgtm:0.33.0   # fixe a versão
+    ports:
+      - "3000:3000"   # Grafana
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP

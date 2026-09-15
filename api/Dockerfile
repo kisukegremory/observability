@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
  && python -m compileall -q -x '/\.venv/' /app # main.py nunca é compilado, portanto deixar ele leve e modularizar o que for possível é o ideal
 
  # Runtime
- FROM python:3.14-slim
+FROM python:3.14-slim AS base
 
  # remove uso do 'uv run' + não reescreve bytecode
  ENV PATH="/app/.venv/bin:$PATH" \
