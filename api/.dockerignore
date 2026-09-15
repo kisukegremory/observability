@@ -1,9 +1,18 @@
+# ambiente e caches locais
 .venv
-.git
 __pycache__
 *.pyc
-.env*
-tests
 .pytest_cache
+.ruff_cache
+
+# git e segredos
+.git
+.env*
+
+# não fazem parte do runtime
+tests
+README.md
+docker-compose.yml
+run.sh
 Dockerfile
 .dockerignore

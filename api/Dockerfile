@@ -35,12 +35,19 @@ RUN groupadd --system --gid 10001 app \
 && useradd --system --uid 10001 --gid app --no-create-home \
     --shell /usr/sbin/nologin app # Não tem acesso a shell e nem home
 
-
-WORKDIR /app
-COPY --from=builder /app /app
-
-USER app
-
 EXPOSE 8000
 
+WORKDIR /app
+
+# ---------- dev (código gravável pelo usuário app) ----------
+FROM base AS dev
+COPY --from=builder --chown=app:app /app /app
+USER app
+CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+
+# ---------- runtime (produção, código somente leitura) ----------
+FROM base AS runtime
+COPY --from=builder /app /app
+USER app
 CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
