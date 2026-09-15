@@ -12,4 +12,8 @@ default-run:
 	uv run uvicorn main:app --reload
 
 instrument-run:
-	uv run opentelemetry-instrument --traces_exporter console --metrics_exporter console uvicorn main:app --reload
+	uv run opentelemetry-instrument \
+	--logs_exporter console \
+	 --traces_exporter console \
+	 --metrics_exporter console \
+	uvicorn main:app
