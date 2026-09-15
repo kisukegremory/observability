@@ -1,0 +1,21 @@
+[project]
+name = "single-file"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "opentelemetry-distro>=0.65b0",
+    "opentelemetry-exporter-otlp>=1.44.0",
+    "opentelemetry-instrumentation-asyncio==0.65b0",
+    "opentelemetry-instrumentation-dbapi==0.65b0",
+    "opentelemetry-instrumentation-exceptions==0.65b0",
+    "opentelemetry-instrumentation-grpc==0.65b0",
+    "opentelemetry-instrumentation-logging==0.65b0",
+    "opentelemetry-instrumentation-requests==0.65b0",
+    "opentelemetry-instrumentation-sqlite3==0.65b0",
+    "opentelemetry-instrumentation-threading==0.65b0",
+    "opentelemetry-instrumentation-urllib==0.65b0",
+    "opentelemetry-instrumentation-urllib3==0.65b0",
+    "opentelemetry-instrumentation-wsgi==0.65b0",
+]
