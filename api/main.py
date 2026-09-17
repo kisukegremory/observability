@@ -1,37 +1,57 @@
 import logging
 import random
-import time
-from uuid import uuid4
 
 from fastapi import FastAPI
-from opentelemetry import trace
+from opentelemetry import metrics, trace
+
+from src import config
+from src.errors import unhandled_exception_handler
+
+logger = logging.getLogger(__name__)
+tracer = trace.get_tracer(__name__)
+meter = metrics.get_meter(__name__)
+sales_counter = meter.create_counter("sales_created_total")
+
+if config.is_opentelemetry_active():
+    logger.info("OpenTelemetry is Active")
 
 app = FastAPI()
-
-tracer = trace.get_tracer(__name__)
-logger = logging.getLogger(__name__)
+app.add_exception_handler(Exception, unhandled_exception_handler)
 
 
+# Health Check
 @app.get("/health")
-def main():
-        return {"status":"ok"}
+async def health():
+    return {"status": "ok"}
 
-@tracer.start_as_current_span("calculo_coxinhas")
-def calcula_coxinhas():
-    span = trace.get_current_span()
-    span.set_attribute("user.id",str(uuid4()))
 
-def process():
-    pass
+# Dynamic Path
+@app.get("/items/{item_id}")
+def work(item_id: str):
+    return {"item_id": item_id}
 
-@app.get("/work")
-def work():
-    with tracer.start_as_current_span("processamento_brabo") as span:
-        time_choosed = random.randint(1,5)
-        if time_choosed < 3:
-            time.sleep(time_choosed)
-            calcula_coxinhas()
-            span.set_attribute("nina.estado","trabalhando")
-            return {"Nina":"Cansadinina!"}
-        span.set_attribute("nina.estado","faz_nada")
-        return {"Nina":"Me da petisco!"}
+
+# Static Path
+@app.get("/topics")
+def topics():
+    return {"topic_id": random.randint(1, 20)}
+
+
+# Manual Meter
+@app.get("/sales")
+def sales():
+    with tracer.start_as_current_span("sales_type_select") as span:
+        sales_type = random.choice([{"type": "finance"}, {"type": "food"}])
+        payment_type = random.choice([{"payment_type": "credit"}, {"payment_type": "money"}])
+        span.set_attributes(sales_type)
+        span.set_attributes(payment_type)
+        sales_counter.add(1, attributes=sales_type)
+    return {"status": "ok"}
+
+
+# Raises
+@app.get("/unexpected")
+def unexpected():
+    if random.choice([False, True]):
+        return 1 / 0
+    return {"status_code": 200}

@@ -13,7 +13,7 @@ WORKDIR /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project --no-dev
+    uv sync --locked --no-dev
 
 # Copia Aplicação
 COPY . .
@@ -43,11 +43,10 @@ WORKDIR /app
 FROM base AS dev
 COPY --from=builder --chown=app:app /app /app
 USER app
-CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-
+CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000","--no-access-log"]
 
 # ---------- runtime (produção, código somente leitura) ----------
 FROM base AS runtime
 COPY --from=builder /app /app
 USER app
-CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000","--no-access-log"]

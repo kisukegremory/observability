@@ -8,10 +8,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - OTEL_SERVICE_NAME=nina-service
+      - OTEL_SERVICE_NAME=obs-api
       - OTEL_TRACES_EXPORTER=otlp
       - OTEL_METRICS_EXPORTER=otlp
-      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp,console
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4317
       - OTEL_PYTHON_EXCLUDED_URLS=health
       - OTEL_METRIC_EXPORT_INTERVAL=5000
