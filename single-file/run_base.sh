@@ -6,4 +6,4 @@ export OTEL_METRICS_EXPORTER=none
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
 
 
-uv run opentelemetry-instrument python main.py
+uv run opentelemetry-instrument python main_base.py
